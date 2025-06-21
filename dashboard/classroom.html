@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLU Tutor - Phòng học</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="../css/classroom.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body class="classroom-page">
+    <!-- Back Button -->
+    <div class="back-button-container">
+        <a href="#" id="backButton" class="btn btn-secondary">
+            <i class="fas fa-arrow-left"></i>
+            <span id="backButtonText">Quay lại Dashboard</span>
+        </a>
+    </div>
+
+    <div class="classroom-container">
+        <!-- Main Content Area -->
+        <div class="classroom-main">
+            <!-- Teams Meeting Area -->
+            <div class="teams-container">
+                <div class="teams-header">
+                    <h2>Microsoft Teams Meeting</h2>
+                    <div class="meeting-controls">
+                        <button class="btn btn-control" title="Tắt/Bật Camera">
+                            <i class="fas fa-video"></i>
+                        </button>
+                        <button class="btn btn-control" title="Tắt/Bật Micro">
+                            <i class="fas fa-microphone"></i>
+                        </button>
+                        <button class="btn btn-control" title="Chia sẻ màn hình">
+                            <i class="fas fa-desktop"></i>
+                        </button>
+                        <button class="btn btn-control" title="Danh sách người tham gia">
+                            <i class="fas fa-users"></i>
+                        </button>
+                        <button class="btn btn-danger" id="endClassBtn">
+                            <i class="fas fa-phone-slash"></i>
+                            Kết thúc lớp học
+                        </button>
+                    </div>
+                </div>
+                <div class="teams-frame">
+                    <iframe src="https://teams.microsoft.com/l/meetup-join/dummy-meeting-url" 
+                            frameborder="0" 
+                            allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+
+            <!-- Chat Area -->
+            <div class="chat-container">
+                <div class="chat-header">
+                    <h3>Chat với Tutor</h3>
+                </div>
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message tutor">
+                        <div class="message-avatar">
+                            <img src="https://ui-avatars.com/api/?name=Tutor&background=1a73e8&color=fff" alt="Tutor">
+                        </div>
+                        <div class="message-content">
+                            <div class="message-info">
+                                <span class="message-sender">Tutor Nguyễn Văn A</span>
+                                <span class="message-time">10:00</span>
+                            </div>
+                            <div class="message-text">
+                                Chào bạn! Mình bắt đầu buổi học nhé?
+                            </div>
+                        </div>
+                    </div>
+                    <div class="message student">
+                        <div class="message-avatar">
+                            <img src="https://ui-avatars.com/api/?name=Student&background=4CAF50&color=fff" alt="Student">
+                        </div>
+                        <div class="message-content">
+                            <div class="message-info">
+                                <span class="message-sender">Bạn</span>
+                                <span class="message-time">10:01</span>
+                            </div>
+                            <div class="message-text">
+                                Vâng ạ, em đã sẵn sàng!
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <input type="text" placeholder="Nhập tin nhắn..." id="messageInput">
+                    <button class="btn btn-primary" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating Modal -->
+    <div class="modal" id="ratingModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Đánh giá buổi học</h2>
+            </div>
+            <div class="modal-body">
+                <form id="ratingForm">
+                    <div class="rating-stars">
+                        <h3>Chất lượng giảng dạy</h3>
+                        <div class="stars">
+                            <i class="fas fa-star" data-rating="1"></i>
+                            <i class="fas fa-star" data-rating="2"></i>
+                            <i class="fas fa-star" data-rating="3"></i>
+                            <i class="fas fa-star" data-rating="4"></i>
+                            <i class="fas fa-star" data-rating="5"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nhận xét của bạn</label>
+                        <textarea class="form-control" rows="3" placeholder="Chia sẻ trải nghiệm học tập của bạn..."></textarea>
+                    </div>
+                    <div class="rating-categories">
+                        <h3>Đánh giá chi tiết</h3>
+                        <div class="rating-category">
+                            <label>Kiến thức chuyên môn</label>
+                            <div class="stars">
+                                <i class="fas fa-star" data-rating="1"></i>
+                                <i class="fas fa-star" data-rating="2"></i>
+                                <i class="fas fa-star" data-rating="3"></i>
+                                <i class="fas fa-star" data-rating="4"></i>
+                                <i class="fas fa-star" data-rating="5"></i>
+                            </div>
+                        </div>
+                        <div class="rating-category">
+                            <label>Kỹ năng giảng dạy</label>
+                            <div class="stars">
+                                <i class="fas fa-star" data-rating="1"></i>
+                                <i class="fas fa-star" data-rating="2"></i>
+                                <i class="fas fa-star" data-rating="3"></i>
+                                <i class="fas fa-star" data-rating="4"></i>
+                                <i class="fas fa-star" data-rating="5"></i>
+                            </div>
+                        </div>
+                        <div class="rating-category">
+                            <label>Thái độ nhiệt tình</label>
+                            <div class="stars">
+                                <i class="fas fa-star" data-rating="1"></i>
+                                <i class="fas fa-star" data-rating="2"></i>
+                                <i class="fas fa-star" data-rating="3"></i>
+                                <i class="fas fa-star" data-rating="4"></i>
+                                <i class="fas fa-star" data-rating="5"></i>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="submitRating()">
+                    <i class="fas fa-paper-plane"></i>
+                    Gửi đánh giá
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/classroom.js"></script>
+    <script>
+        // Determine user role and set appropriate back button
+        document.addEventListener('DOMContentLoaded', function() {
+            const backButton = document.getElementById('backButton');
+            const backButtonText = document.getElementById('backButtonText');
+            
+            // Check if user came from tutor or student dashboard
+            // This can be determined by checking the referrer or session storage
+            const referrer = document.referrer;
+            const currentUser = JSON.parse(sessionStorage.getItem('currentUser'));
+            
+            if (referrer.includes('tutor.html') || (currentUser && currentUser.role === 'tutor')) {
+                // User is a tutor
+                backButton.href = 'tutor.html';
+                backButtonText.textContent = 'Quay lại Tutor Dashboard';
+            } else {
+                // User is a student (default)
+                backButton.href = 'student.html';
+                backButtonText.textContent = 'Quay lại Student Dashboard';
+            }
+            
+            console.log('Classroom page loaded');
+            console.log('Referrer:', referrer);
+            console.log('Current user:', currentUser);
+            console.log('Back button href:', backButton.href);
+        });
+    </script>
+</body>
+</html> 

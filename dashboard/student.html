@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLU Tutor - Student Dashboard</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="../images/vlu-logo.jpg" alt="VLU Logo" class="logo">
+            <h2>VLU Tutor</h2>
+        </div>
+
+        <div class="user-info">
+            <img src="https://ui-avatars.com/api/?name=Student&background=1a73e8&color=fff" alt="User Avatar">
+            <h3 class="user-name">Student</h3>
+            <p class="user-email">student@vlu.edu.vn</p>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    Tổng quan
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-modal-target="#findClassModal">
+                    <i class="fas fa-search"></i>
+                    Tìm lớp học
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-modal-target="#scheduleModal">
+                    <i class="fas fa-calendar"></i>
+                    Lịch học
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-modal-target="#tutorRatingsModal">
+                    <i class="fas fa-star"></i>
+                    Đánh giá Tutor
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-modal-target="#tutorRegistrationModal">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    Đăng ký làm Tutor
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-modal-target="#profileModal">
+                    <i class="fas fa-user"></i>
+                    Hồ sơ
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="dashboard.logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Đăng xuất
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1>Xin chào, <span class="user-name">Student</span>!</h1>
+            <button class="btn btn-primary" onclick="testClassroomLink()">
+                <i class="fas fa-video"></i>
+                Test Vào học
+            </button>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="dashboard-grid">
+            <div class="card stat-card">
+                <i class="fas fa-book"></i>
+                <div class="stat-value">5</div>
+                <div class="stat-label">Lớp học đang tham gia</div>
+            </div>
+            <div class="card stat-card">
+                <i class="fas fa-clock"></i>
+                <div class="stat-value">24</div>
+                <div class="stat-label">Giờ học tích lũy</div>
+            </div>
+            <div class="card stat-card">
+                <i class="fas fa-star"></i>
+                <div class="stat-value">12</div>
+                <div class="stat-label">Đánh giá đã gửi</div>
+            </div>
+        </div>
+
+        <!-- Learning Progress -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Tiến độ học tập</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="progressChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Upcoming Classes -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Lịch học sắp tới</h2>
+                <button class="btn btn-primary" onclick="syncCalendar()">
+                    <i class="fas fa-sync"></i>
+                    Đồng bộ Teams
+                </button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Môn học</th>
+                            <th>Tutor</th>
+                            <th>Thời gian</th>
+                            <th>Link Teams</th>
+                            <th>Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Lập trình Web</td>
+                            <td>Nguyễn Văn A</td>
+                            <td>20/03/2024 14:00</td>
+                            <td>
+                                <a href="classroom.html" class="btn btn-primary upcoming-class-link" data-subject="Lập trình Web" data-tutor="Nguyễn Văn A">
+                                    <i class="fas fa-video"></i>
+                                    Vào học
+                                </a>
+                            </td>
+                            <td><span class="badge badge-success">Sắp diễn ra</span></td>
+                        </tr>
+                        <tr>
+                            <td>Cơ sở dữ liệu</td>
+                            <td>Trần Thị B</td>
+                            <td>21/03/2024 09:00</td>
+                            <td>
+                                <a href="classroom.html" class="btn btn-primary upcoming-class-link" data-subject="Cơ sở dữ liệu" data-tutor="Trần Thị B">
+                                    <i class="fas fa-video"></i>
+                                    Vào học
+                                </a>
+                            </td>
+                            <td><span class="badge badge-warning">Chờ xác nhận</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Feedback -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Đánh giá gần đây</h2>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tutor</th>
+                            <th>Môn học</th>
+                            <th>Đánh giá</th>
+                            <th>Ngày</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Nguyễn Văn A</td>
+                            <td>Lập trình Web</td>
+                            <td>
+                                <i class="fas fa-star" style="color: gold;"></i>
+                                <i class="fas fa-star" style="color: gold;"></i>
+                                <i class="fas fa-star" style="color: gold;"></i>
+                                <i class="fas fa-star" style="color: gold;"></i>
+                                <i class="fas fa-star" style="color: gold;"></i>
+                            </td>
+                            <td>15/03/2024</td>
+                        </tr>
+                        <tr>
+                            <td>Trần Thị B</td>
+                            <td>Cơ sở dữ liệu</td>
+                            <td>
+                                <i class="fas fa-star" style="color: gold;"></i>
+                                <i class="fas fa-star" style="color: gold;"></i>
+                                <i class="fas fa-star" style="color: gold;"></i>
+                                <i class="fas fa-star" style="color: gold;"></i>
+                                <i class="far fa-star" style="color: gold;"></i>
+                            </td>
+                            <td>10/03/2024</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Find Class Modal -->
+    <div class="modal" id="findClassModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Tìm lớp học</h2>
+                <button class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Search Form Container (30%) -->
+                <div class="search-form-container">
+                    <form id="findClassForm">
+                        <div class="form-group">
+                            <label class="form-label">Môn học</label>
+                            <select class="form-control" required>
+                                <option value="">Chọn môn học</option>
+                                <option value="web">Lập trình Web</option>
+                                <option value="database">Cơ sở dữ liệu</option>
+                                <option value="java">Lập trình Java</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Tutor</label>
+                            <select class="form-control">
+                                <option value="">Tất cả Tutor</option>
+                                <option value="1">Nguyễn Văn A</option>
+                                <option value="2">Trần Thị B</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Thời gian</label>
+                            <select class="form-control">
+                                <option value="">Tất cả thời gian</option>
+                                <option value="morning">Buổi sáng (8:00 - 11:00)</option>
+                                <option value="afternoon">Buổi chiều (13:00 - 17:00)</option>
+                                <option value="evening">Buổi tối (18:00 - 21:00)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Ngày học</label>
+                            <input type="date" class="form-control" min="<?php echo date('Y-m-d'); ?>" required>
+                        </div>
+                        <button class="btn btn-primary" onclick="searchClasses()">
+                            <i class="fas fa-search"></i>
+                            Tìm kiếm
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Search Results Container (70%) -->
+                <div class="search-results">
+                    <h3>Danh sách lớp học</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tên khóa học</th>
+                                    <th>Tình trạng khóa học</th>
+                                    <th>Giá tiền</th>
+                                    <th>Địa điểm học</th>
+                                    <th>Thao tác</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="course-info">
+                                            <img src="../images/courses/web-programming.jpg" alt="Lập trình Web" class="course-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Web+Programming&background=1a73e8&color=fff'">
+                                            <div>
+                                                <div class="course-name">Lập trình Web</div>
+                                                <div class="tutor-name">Tutor: Nguyễn Văn A</div>
+                                                <div class="course-details">
+                                                    <small>Thời gian: 20/03/2024 14:00 - 16:00</small><br>
+                                                    <small>Đánh giá: ⭐⭐⭐⭐⭐ (4.8/5)</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-success">Đang mở đăng ký</span></td>
+                                    <td>120.000 VND</td>
+                                    <td>Online (MS Teams)</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="registerClass(1)">
+                                            <i class="fas fa-check"></i>
+                                            Đăng ký
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="course-info">
+                                            <img src="../images/courses/database.jpg" alt="Cơ sở dữ liệu" class="course-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Database&background=0f9d58&color=fff'">
+                                            <div>
+                                                <div class="course-name">Cơ sở dữ liệu</div>
+                                                <div class="tutor-name">Tutor: Trần Thị B</div>
+                                                <div class="course-details">
+                                                    <small>Thời gian: 21/03/2024 09:00 - 11:00</small><br>
+                                                    <small>Đánh giá: ⭐⭐⭐⭐ (4.2/5)</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-success">Đang mở đăng ký</span></td>
+                                    <td>100.000 VND</td>
+                                    <td>Online (MS Teams)</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="registerClass(2)">
+                                            <i class="fas fa-check"></i>
+                                            Đăng ký
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="course-info">
+                                            <img src="../images/courses/java-programming.jpg" alt="Lập trình Java" class="course-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Java+Programming&background=db4437&color=fff'">
+                                            <div>
+                                                <div class="course-name">Lập trình Java</div>
+                                                <div class="tutor-name">Tutor: Lê Văn C</div>
+                                                <div class="course-details">
+                                                    <small>Thời gian: 22/03/2024 18:00 - 20:00</small><br>
+                                                    <small>Đánh giá: ⭐⭐⭐⭐⭐ (4.9/5)</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-warning">Đóng đăng ký</span></td>
+                                    <td>150.000 VND</td>
+                                    <td>Online (MS Teams)</td>
+                                    <td>
+                                        <button class="btn btn-secondary btn-sm" disabled>
+                                            <i class="fas fa-lock"></i>
+                                            Đã đóng
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="course-info">
+                                            <img src="../images/courses/python-programming.jpg" alt="Lập trình Python" class="course-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Python+Programming&background=ff6d01&color=fff'">
+                                            <div>
+                                                <div class="course-name">Lập trình Python</div>
+                                                <div class="tutor-name">Tutor: Phạm Thị D</div>
+                                                <div class="course-details">
+                                                    <small>Thời gian: 23/03/2024 15:00 - 17:00</small><br>
+                                                    <small>Đánh giá: ⭐⭐⭐⭐ (4.1/5)</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-success">Đang mở đăng ký</span></td>
+                                    <td>80.000 VND</td>
+                                    <td>Online (MS Teams)</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="registerClass(4)">
+                                            <i class="fas fa-check"></i>
+                                            Đăng ký
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="course-info">
+                                            <img src="../images/courses/data-structures.jpg" alt="Cấu trúc dữ liệu" class="course-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Data+Structures&background=4285f4&color=fff'">
+                                            <div>
+                                                <div class="course-name">Cấu trúc dữ liệu</div>
+                                                <div class="tutor-name">Tutor: Hoàng Văn E</div>
+                                                <div class="course-details">
+                                                    <small>Thời gian: 24/03/2024 10:00 - 12:00</small><br>
+                                                    <small>Đánh giá: ⭐⭐⭐⭐⭐ (4.7/5)</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-danger">Hủy lớp</span></td>
+                                    <td>130.000 VND</td>
+                                    <td>Online (MS Teams)</td>
+                                    <td>
+                                        <button class="btn btn-danger btn-sm" disabled>
+                                            <i class="fas fa-times"></i>
+                                            Đã hủy
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="course-info">
+                                            <img src="../images/courses/network-programming.jpg" alt="Mạng máy tính" class="course-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Network+Programming&background=34a853&color=fff'">
+                                            <div>
+                                                <div class="course-name">Mạng máy tính</div>
+                                                <div class="tutor-name">Tutor: Vũ Thị F</div>
+                                                <div class="course-details">
+                                                    <small>Thời gian: 25/03/2024 19:00 - 21:00</small><br>
+                                                    <small>Đánh giá: ⭐⭐⭐⭐ (4.3/5)</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-success">Đang mở đăng ký</span></td>
+                                    <td>90.000 VND</td>
+                                    <td>Online (MS Teams)</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="registerClass(6)">
+                                            <i class="fas fa-check"></i>
+                                            Đăng ký
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="course-info">
+                                            <img src="../images/courses/mobile-development.jpg" alt="Lập trình Mobile" class="course-avatar" onerror="this.src='https://ui-avatars.com/api/?name=Mobile+Development&background=ea4335&color=fff'">
+                                            <div>
+                                                <div class="course-name">Lập trình Mobile</div>
+                                                <div class="tutor-name">Tutor: Đỗ Văn G</div>
+                                                <div class="course-details">
+                                                    <small>Thời gian: 26/03/2024 14:00 - 16:00</small><br>
+                                                    <small>Đánh giá: ⭐⭐⭐⭐⭐ (4.6/5)</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-success">Đang mở đăng ký</span></td>
+                                    <td>140.000 VND</td>
+                                    <td>Online (MS Teams)</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="registerClass(7)">
+                                            <i class="fas fa-check"></i>
+                                            Đăng ký
+                                        </button>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="course-info">
+                                            <img src="../images/courses/ai-programming.jpg" alt="Trí tuệ nhân tạo" class="course-avatar" onerror="this.src='https://ui-avatars.com/api/?name=AI+Programming&background=9c27b0&color=fff'">
+                                            <div>
+                                                <div class="course-name">Trí tuệ nhân tạo</div>
+                                                <div class="tutor-name">Tutor: Nguyễn Thị H</div>
+                                                <div class="course-details">
+                                                    <small>Thời gian: 27/03/2024 16:00 - 18:00</small><br>
+                                                    <small>Đánh giá: ⭐⭐⭐⭐⭐ (4.8/5)</small>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td><span class="badge badge-success">Đang mở đăng ký</span></td>
+                                    <td>150.000 VND</td>
+                                    <td>Online (MS Teams)</td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="registerClass(8)">
+                                            <i class="fas fa-check"></i>
+                                            Đăng ký
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutor Registration Modal -->
+    <div class="modal" id="tutorRegistrationModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Đăng ký làm Tutor</h2>
+                <button class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="tutorRegistrationForm">
+                    <!-- Academic Information -->
+                    <h3>Thông tin học tập</h3>
+                    <div class="form-group">
+                        <label class="form-label">GPA hiện tại</label>
+                        <input type="number" class="form-control" step="0.01" min="2.5" max="4.0" required>
+                        <small class="form-text">GPA tối thiểu 3.2/4.0</small>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Môn học đăng ký dạy</label>
+                        <select class="form-control" multiple required>
+                            <option value="web">Lập trình Web</option>
+                            <option value="database">Cơ sở dữ liệu</option>
+                            <option value="java">Lập trình Java</option>
+                            <option value="python">Lập trình Python</option>
+                            <option value="dsa">Cấu trúc dữ liệu và giải thuật</option>
+                        </select>
+                        <small class="form-text">Có thể chọn nhiều môn (Giữ Ctrl để chọn)</small>
+                    </div>
+
+                    <!-- Teaching Experience -->
+                    <h3>Kinh nghiệm giảng dạy</h3>
+                    <div class="form-group"><br>
+                        <textarea class="form-control" rows="3" placeholder="Mô tả kinh nghiệm giảng dạy của bạn (nếu có)"></textarea>
+                    </div>
+
+                    <!-- Achievements -->
+                    <h3>Thành tích</h3>
+                    <div class="form-group">
+                        <label class="form-label">Chứng chỉ</label>
+                        <div id="certificatesList">
+                            <div class="certificate-item">
+                                <input type="text" class="form-control" placeholder="Tên chứng chỉ">
+                                <input type="date" class="form-control" placeholder="Ngày cấp">
+                                <button type="button" class="btn btn-danger btn-sm" onclick="removeCertificate(this)">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-sm mt-2" onclick="addCertificate()">
+                            <i class="fas fa-plus"></i> Thêm chứng chỉ
+                        </button>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Giải thưởng</label>
+                        <textarea class="form-control" rows="3" placeholder="Liệt kê các giải thưởng học thuật của bạn"></textarea>
+                    </div>
+
+                    <!-- Schedule -->
+                    <h3>Lịch dạy dự kiến</h3>
+                    <div class="form-group">
+                        <label class="form-label">Thời gian có thể dạy</label>
+                        <div class="schedule-grid">
+                            <div class="schedule-item">
+                                <input type="checkbox" id="morning" name="schedule" value="morning">
+                                <label for="morning">Sáng (8:00 - 11:00)</label>
+                            </div>
+                            <div class="schedule-item">
+                                <input type="checkbox" id="afternoon" name="schedule" value="afternoon">
+                                <label for="afternoon">Chiều (13:00 - 17:00)</label>
+                            </div>
+                            <div class="schedule-item">
+                                <input type="checkbox" id="evening" name="schedule" value="evening">
+                                <label for="evening">Tối (18:00 - 21:00)</label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <h3>Thông tin bổ sung</h3>
+                    <div class="form-group">
+                        <label class="form-label">Giới thiệu bản thân</label>
+                        <textarea class="form-control" rows="4" placeholder="Giới thiệu về bản thân và lý do muốn trở thành Tutor" required></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Mức học phí dự kiến (VNĐ/giờ)</label>
+                        <input type="number" class="form-control" min="50000" step="10000" required>
+                        <small class="form-text">Tối thiểu 50.000 VNĐ/giờ</small>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="submitTutorRegistration()">
+                    <i class="fas fa-paper-plane"></i>
+                    Gửi đăng ký
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutor Ratings Modal -->
+    <div class="modal" id="tutorRatingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Đánh giá Tutor</h2>
+                <button class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Recent Ratings Tab -->
+                <div class="ratings-section">
+                    <h3>Đánh giá gần đây của bạn</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tutor</th>
+                                    <th>Môn học</th>
+                                    <th>Buổi học</th>
+                                    <th>Đánh giá</th>
+                                    <th>Nhận xét</th>
+                                    <th>Thời gian</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="tutor-info">
+                                            <img src="https://ui-avatars.com/api/?name=Tutor+A&background=1a73e8&color=fff" alt="Tutor" class="tutor-avatar">
+                                            <span>Nguyễn Văn A</span>
+                                        </div>
+                                    </td>
+                                    <td>Lập trình Web</td>
+                                    <td>20/03/2024 14:00</td>
+                                    <td>
+                                        <div class="stars">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <span>(5.0)</span>
+                                        </div>
+                                    </td>
+                                    <td>Giảng dạy rất nhiệt tình và dễ hiểu</td>
+                                    <td>15/03/2024</td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <div class="tutor-info">
+                                            <img src="https://ui-avatars.com/api/?name=Tutor+B&background=1a73e8&color=fff" alt="Tutor" class="tutor-avatar">
+                                            <span>Trần Thị B</span>
+                                        </div>
+                                    </td>
+                                    <td>Cơ sở dữ liệu</td>
+                                    <td>18/03/2024 09:00</td>
+                                    <td>
+                                        <div class="stars">
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="fas fa-star"></i>
+                                            <i class="far fa-star"></i>
+                                            <span>(4.0)</span>
+                                        </div>
+                                    </td>
+                                    <td>Giải thích chi tiết, tuy nhiên cần thêm ví dụ thực tế</td>
+                                    <td>18/03/2024</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Pending Ratings -->
+                <div class="ratings-section mt-4">
+                    <h3>Buổi học cần đánh giá</h3>
+                    <div class="table-container">
+                        <table>
+                            <thead>
+                                <tr>
+                                    <th>Tutor</th>
+                                    <th>Môn học</th>
+                                    <th>Thời gian học</th>
+                                    <th>Trạng thái</th>
+                                    <th></th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>
+                                        <div class="tutor-info">
+                                            <img src="https://ui-avatars.com/api/?name=Tutor+C&background=1a73e8&color=fff" alt="Tutor" class="tutor-avatar">
+                                            <span>Lê Văn C</span>
+                                        </div>
+                                    </td>
+                                    <td>Lập trình Java</td>
+                                    <td>19/03/2024 15:00</td>
+                                    <td><span class="badge badge-warning">Chưa đánh giá</span></td>
+                                    <td>
+                                        <button class="btn btn-primary btn-sm" onclick="openRatingForm(1)">
+                                            <i class="fas fa-star"></i>
+                                            Đánh giá
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Rating Form Modal -->
+    <div class="modal" id="ratingFormModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Đánh giá buổi học</h2>
+                <button class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="ratingForm">
+                    <input type="hidden" id="classId" name="classId">
+                    <div class="form-group">
+                        <label class="form-label">Đánh giá sao</label>
+                        <div class="rating-input">
+                            <i class="far fa-star" data-rating="1"></i>
+                            <i class="far fa-star" data-rating="2"></i>
+                            <i class="far fa-star" data-rating="3"></i>
+                            <i class="far fa-star" data-rating="4"></i>
+                            <i class="far fa-star" data-rating="5"></i>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Nhận xét chi tiết</label>
+                        <textarea class="form-control" rows="4" placeholder="Chia sẻ trải nghiệm học tập của bạn..." required></textarea>
+                    </div>
+                    <!-- Rating Categories -->
+                    <div class="form-group">
+                        <label class="form-label">Đánh giá chi tiết</label>
+                        <div class="rating-categories">
+                            <div class="rating-category">
+                                <span>Kiến thức chuyên môn</span>
+                                <div class="stars">
+                                    <i class="far fa-star" data-category="knowledge" data-rating="1"></i>
+                                    <i class="far fa-star" data-category="knowledge" data-rating="2"></i>
+                                    <i class="far fa-star" data-category="knowledge" data-rating="3"></i>
+                                    <i class="far fa-star" data-category="knowledge" data-rating="4"></i>
+                                    <i class="far fa-star" data-category="knowledge" data-rating="5"></i>
+                                </div>
+                            </div>
+                            <div class="rating-category">
+                                <span>Kỹ năng giảng dạy</span>
+                                <div class="stars">
+                                    <i class="far fa-star" data-category="teaching" data-rating="1"></i>
+                                    <i class="far fa-star" data-category="teaching" data-rating="2"></i>
+                                    <i class="far fa-star" data-category="teaching" data-rating="3"></i>
+                                    <i class="far fa-star" data-category="teaching" data-rating="4"></i>
+                                    <i class="far fa-star" data-category="teaching" data-rating="5"></i>
+                                </div>
+                            </div>
+                            <div class="rating-category">
+                                <span>Thái độ</span>
+                                <div class="stars">
+                                    <i class="far fa-star" data-category="attitude" data-rating="1"></i>
+                                    <i class="far fa-star" data-category="attitude" data-rating="2"></i>
+                                    <i class="far fa-star" data-category="attitude" data-rating="3"></i>
+                                    <i class="far fa-star" data-category="attitude" data-rating="4"></i>
+                                    <i class="far fa-star" data-category="attitude" data-rating="5"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="submitRating()">
+                    <i class="fas fa-paper-plane"></i>
+                    Gửi đánh giá
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Modal -->
+    <div class="modal" id="profileModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Hồ sơ cá nhân</h2>
+                <button class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <form id="profileForm">
+                    <div class="form-group">
+                        <label class="form-label">Ảnh đại diện</label>
+                        <div class="avatar-upload">
+                            <img src="https://ui-avatars.com/api/?name=Student&background=1a73e8&color=fff" 
+                                 alt="Avatar" class="avatar-preview">
+                            <input type="file" accept="image/*" class="form-control">
+                        </div>
+                    </div>
+
+                    <!-- Basic Information -->
+                    <h3>Thông tin cơ bản</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Họ và tên</label>
+                            <input type="text" class="form-control" value="Nguyễn Văn A" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">MSSV</label>
+                            <input type="text" class="form-control readonly-field" value="21000123" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Email</label>
+                            <input type="email" class="form-control readonly-field" value="student@vlu.edu.vn" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Số điện thoại</label>
+                            <input type="tel" class="form-control" value="0123456789" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Ngày sinh</label>
+                            <input type="date" class="form-control" value="2003-01-01" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Giới tính</label>
+                            <select class="form-control" required>
+                                <option value="male">Nam</option>
+                                <option value="female">Nữ</option>
+                                <option value="other">Khác</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Academic Information -->
+                    <h3>Thông tin học tập</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Khoa</label>
+                            <input type="text" class="form-control readonly-field" value="Công nghệ thông tin" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Chuyên ngành</label>
+                            <input type="text" class="form-control readonly-field" value="Kỹ thuật phần mềm" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Niên khóa</label>
+                            <input type="text" class="form-control readonly-field" value="2021-2025" readonly>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">GPA</label>
+                            <input type="number" class="form-control readonly-field" value="3.5" readonly>
+                        </div>
+                    </div>
+
+                    <!-- Additional Information -->
+                    <h3>Thông tin bổ sung</h3>
+                    <div class="form-group">
+                        <label class="form-label">Giới thiệu bản thân</label>
+                        <textarea class="form-control" rows="3" placeholder="Giới thiệu ngắn về bản thân...">Sinh viên năm 3 ngành KTPM, đam mê lập trình và công nghệ.</textarea>
+                    </div>
+
+                    <!-- Change Password -->
+                    <h3>Đổi mật khẩu</h3>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label class="form-label">Mật khẩu hiện tại</label>
+                            <input type="password" class="form-control" placeholder="Nhập mật khẩu hiện tại">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Mật khẩu mới</label>
+                            <input type="password" class="form-control" placeholder="Nhập mật khẩu mới">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Xác nhận mật khẩu mới</label>
+                            <input type="password" class="form-control" placeholder="Nhập lại mật khẩu mới">
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-primary" onclick="updateProfile()">
+                    <i class="fas fa-save"></i>
+                    Lưu thay đổi
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Schedule Modal -->
+    <div class="modal" id="scheduleModal">
+        <div class="modal-content modal-large">
+            <div class="modal-header">
+                <h2 class="modal-title">Lịch học của tôi</h2>
+                <button class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Schedule Filters -->
+                <div class="schedule-filters">
+                    <div class="filter-group">
+                        <label>Lọc theo môn học:</label>
+                        <select id="subjectFilter" onchange="filterSchedule()">
+                            <option value="">Tất cả môn học</option>
+                            <option value="web">Lập trình Web</option>
+                            <option value="database">Cơ sở dữ liệu</option>
+                            <option value="java">Lập trình Java</option>
+                            <option value="python">Lập trình Python</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label>Lọc theo tuần:</label>
+                        <input type="week" id="weekFilter" onchange="filterSchedule()">
+                    </div>
+                </div>
+
+                <!-- Weekly Schedule View -->
+                <div class="schedule-view">
+                    <div class="schedule-header">
+                        <button class="btn btn-secondary btn-sm" onclick="previousWeek()">
+                            <i class="fas fa-chevron-left"></i>
+                        </button>
+                        <h3 id="currentWeek">Tuần 20/03/2024 - 26/03/2024</h3>
+                        <button class="btn btn-secondary btn-sm" onclick="nextWeek()">
+                            <i class="fas fa-chevron-right"></i>
+                        </button>
+                    </div>
+
+                    <div class="schedule-grid">
+                        <div class="schedule-day">
+                            <div class="day-header">Thứ 2</div>
+                            <div class="day-content">
+                                <div class="class-slot">
+                                    <div class="class-info">
+                                        <h4>Lập trình Web</h4>
+                                        <p><i class="fas fa-user"></i> Nguyễn Văn A</p>
+                                        <p><i class="fas fa-clock"></i> 14:00 - 16:00</p>
+                                        <p><i class="fas fa-map-marker-alt"></i> Teams Meeting</p>
+                                    </div>
+                                    <div class="class-actions">
+                                        <a href="classroom.html" class="btn btn-primary upcoming-class-link" data-subject="Lập trình Web" data-tutor="Nguyễn Văn A">
+                                            <i class="fas fa-video"></i> Vào học
+                                        </a>
+                                        <span class="status-badge status-upcoming">Sắp diễn ra</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schedule-day">
+                            <div class="day-header">Thứ 3</div>
+                            <div class="day-content">
+                                <div class="class-slot">
+                                    <div class="class-info">
+                                        <h4>Cơ sở dữ liệu</h4>
+                                        <p><i class="fas fa-user"></i> Trần Thị B</p>
+                                        <p><i class="fas fa-clock"></i> 09:00 - 11:00</p>
+                                        <p><i class="fas fa-map-marker-alt"></i> Teams Meeting</p>
+                                    </div>
+                                    <div class="class-actions">
+                                        <a href="classroom.html" class="btn btn-primary upcoming-class-link" data-subject="Cơ sở dữ liệu" data-tutor="Trần Thị B">
+                                            <i class="fas fa-video"></i> Vào học
+                                        </a>
+                                        <span class="status-badge status-pending">Chờ xác nhận</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schedule-day">
+                            <div class="day-header">Thứ 4</div>
+                            <div class="day-content">
+                                <div class="class-slot completed">
+                                    <div class="class-info">
+                                        <h4>Lập trình Java</h4>
+                                        <p><i class="fas fa-user"></i> Lê Văn C</p>
+                                        <p><i class="fas fa-clock"></i> 15:00 - 17:00</p>
+                                        <p><i class="fas fa-map-marker-alt"></i> Teams Meeting</p>
+                                    </div>
+                                    <div class="class-actions">
+                                        <button class="btn btn-success btn-sm" onclick="openRatingForm(1)">
+                                            <i class="fas fa-star"></i> Đánh giá
+                                        </button>
+                                        <span class="status-badge status-completed">Đã hoàn thành</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schedule-day">
+                            <div class="day-header">Thứ 5</div>
+                            <div class="day-content">
+                                <div class="class-slot">
+                                    <div class="class-info">
+                                        <h4>Lập trình Python</h4>
+                                        <p><i class="fas fa-user"></i> Phạm Thị D</p>
+                                        <p><i class="fas fa-clock"></i> 18:00 - 20:00</p>
+                                        <p><i class="fas fa-map-marker-alt"></i> Teams Meeting</p>
+                                    </div>
+                                    <div class="class-actions">
+                                        <a href="classroom.html" class="btn btn-primary upcoming-class-link" data-subject="Lập trình Python" data-tutor="Phạm Thị D">
+                                            <i class="fas fa-video"></i> Vào học
+                                        </a>
+                                        <span class="status-badge status-upcoming">Sắp diễn ra</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schedule-day">
+                            <div class="day-header">Thứ 6</div>
+                            <div class="day-content">
+                                <!-- No classes on Friday -->
+                            </div>
+                        </div>
+
+                        <div class="schedule-day">
+                            <div class="day-header">Thứ 7</div>
+                            <div class="day-content">
+                                <div class="class-slot">
+                                    <div class="class-info">
+                                        <h4>Lập trình Web</h4>
+                                        <p><i class="fas fa-user"></i> Nguyễn Văn A</p>
+                                        <p><i class="fas fa-clock"></i> 10:00 - 12:00</p>
+                                        <p><i class="fas fa-map-marker-alt"></i> Teams Meeting</p>
+                                    </div>
+                                    <div class="class-actions">
+                                        <a href="classroom.html" class="btn btn-primary upcoming-class-link" data-subject="Lập trình Web" data-tutor="Nguyễn Văn A">
+                                            <i class="fas fa-video"></i> Vào học
+                                        </a>
+                                        <span class="status-badge status-upcoming">Sắp diễn ra</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="schedule-day">
+                            <div class="day-header">Chủ nhật</div>
+                            <div class="day-content">
+                                <!-- No classes on Sunday -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Schedule Summary -->
+                <div class="schedule-summary">
+                    <h3>Tổng kết tuần</h3>
+                    <div class="summary-stats">
+                        <div class="summary-item">
+                            <i class="fas fa-calendar-check"></i>
+                            <span>5 buổi học</span>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-clock"></i>
+                            <span>10 giờ học</span>
+                        </div>
+                        <div class="summary-item">
+                            <i class="fas fa-star"></i>
+                            <span>2 buổi cần đánh giá</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/dashboard.js"></script>
+    <script>
+        // Initialize charts
+        function initCharts() {
+            const ctx = document.getElementById('progressChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['T1', 'T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'T8'],
+                    datasets: [{
+                        label: 'Số giờ học',
+                        data: [2, 4, 3, 5, 4, 6, 3, 4],
+                        borderColor: '#1a73e8',
+                        tension: 0.4
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Số giờ học theo tuần'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Số giờ'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function syncCalendar() {
+            // TODO: Implement Teams calendar sync
+            alert('Đang đồng bộ với Microsoft Teams...');
+        }
+
+        // Test function for "Vào học" buttons
+        function testClassroomLink() {
+            console.log('Testing classroom link...');
+            window.location.href = 'classroom.html';
+        }
+
+        // Enhanced function to navigate to classroom
+        function navigateToClassroom() {
+            console.log('Navigating to classroom...');
+            try {
+                // Try direct navigation first
+                window.location.href = 'classroom.html';
+            } catch (error) {
+                console.error('Navigation error:', error);
+                // Fallback: try opening in new tab
+                window.open('classroom.html', '_blank');
+            }
+        }
+
+        // Function to handle classroom button clicks with confirmation
+        function handleClassroomClick(button) {
+            const subject = button.dataset.subject || 'Unknown';
+            const tutor = button.dataset.tutor || 'Unknown';
+            const location = button.closest('.card') ? button.closest('.card').querySelector('.card-title')?.textContent : 'Unknown';
+            
+            console.log(`Navigating to classroom for: ${subject} with ${tutor} from ${location}`);
+            
+            // Navigate directly to classroom without confirmation
+            navigateToClassroom();
+        }
+
+        // Add click event listeners to all "Vào học" buttons
+        document.addEventListener('DOMContentLoaded', function() {
+            // Find all classroom buttons including those in the upcoming classes table
+            const classroomButtons = document.querySelectorAll('a[href="classroom.html"], .classroom-link, .upcoming-class-link');
+            console.log('Found', classroomButtons.length, 'classroom buttons');
+            
+            classroomButtons.forEach((button, index) => {
+                console.log('Button', index + 1, ':', button);
+                console.log('Button text:', button.textContent.trim());
+                console.log('Button location:', button.closest('.card') ? button.closest('.card').querySelector('.card-title')?.textContent : 'Unknown');
+                console.log('Button data attributes:', {
+                    subject: button.dataset.subject,
+                    tutor: button.dataset.tutor,
+                    class: button.dataset.class
+                });
+                
+                // Remove any existing onclick handlers to avoid conflicts
+                button.removeAttribute('onclick');
+                
+                // Add new click handler
+                button.addEventListener('click', function(e) {
+                    console.log('=== BUTTON CLICKED ===');
+                    console.log('Button clicked!', e.target);
+                    console.log('Button href:', this.href);
+                    console.log('Button class:', this.className);
+                    console.log('Button location:', this.closest('.card') ? this.closest('.card').querySelector('.card-title')?.textContent : 'Unknown');
+                    console.log('Button data attributes:', {
+                        subject: this.dataset.subject,
+                        tutor: this.dataset.tutor,
+                        class: this.dataset.class
+                    });
+                    
+                    // Prevent any default behavior that might interfere
+                    e.stopPropagation();
+                    
+                    // Navigate to classroom
+                    handleClassroomClick(this);
+                    
+                    // Prevent default to handle navigation manually
+                    e.preventDefault();
+                });
+            });
+            
+            // Also add click handler to the test button
+            const testButton = document.querySelector('button[onclick="testClassroomLink()"]');
+            if (testButton) {
+                testButton.onclick = function() {
+                    console.log('Test button clicked');
+                    navigateToClassroom();
+                };
+            }
+            
+            // Debug: Log all buttons with href="classroom.html"
+            const allClassroomLinks = document.querySelectorAll('a[href="classroom.html"]');
+            console.log('All classroom links found:', allClassroomLinks.length);
+            allClassroomLinks.forEach((link, index) => {
+                console.log(`Link ${index + 1}:`, {
+                    text: link.textContent.trim(),
+                    location: link.closest('.card') ? link.closest('.card').querySelector('.card-title')?.textContent : 'Unknown',
+                    classes: link.className,
+                    dataAttributes: {
+                        subject: link.dataset.subject,
+                        tutor: link.dataset.tutor,
+                        class: link.dataset.class
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html> 

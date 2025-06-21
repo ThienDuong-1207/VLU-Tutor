@@ -1,0 +1,684 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VLU Tutor - Center Dashboard</title>
+    <link rel="stylesheet" href="../css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="../images/vlu-logo.jpg" alt="VLU Logo" class="logo">
+            <h2>VLU Tutor</h2>
+        </div>
+
+        <div class="user-info">
+            <img src="https://ui-avatars.com/api/?name=Center&background=f4b400&color=fff" alt="User Avatar">
+            <h3 class="user-name">Center</h3>
+            <p class="user-email">center@vlu.edu.vn</p>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active">
+                    <i class="fas fa-home"></i>
+                    Tổng quan
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-modal-target="#complaintModal">
+                    <i class="fas fa-exclamation-circle"></i>
+                    Xử lý khiếu nại
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-modal-target="#studentListModal">
+                    <i class="fas fa-user-graduate"></i>
+                    Quản lý danh sách sinh viên
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-modal-target="#tutorListModal">
+                    <i class="fas fa-chalkboard-teacher"></i>
+                    Quản lý danh sách tutor
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" data-modal-target="#classListModal">
+                    <i class="fas fa-book"></i>
+                    Quản lý danh sách lớp học
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="dashboard.logout()">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Đăng xuất
+                </a>
+            </li>
+        </ul>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="header">
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <h1>Xin chào, <span class="user-name">Center</span>!</h1>
+            <div class="header-actions">
+                <button class="btn btn-warning" data-modal-target="#tutorApprovalModal">
+                    <i class="fas fa-user-check"></i>
+                    Phê duyệt Tutor (3)
+                </button>
+            </div>
+        </div>
+
+        <!-- Stats Grid -->
+        <div class="dashboard-grid">
+            <div class="card stat-card">
+                <i class="fas fa-users"></i>
+                <div class="stat-value">150</div>
+                <div class="stat-label">Học viên đang học</div>
+            </div>
+            <div class="card stat-card">
+                <i class="fas fa-chalkboard-teacher"></i>
+                <div class="stat-value">25</div>
+                <div class="stat-label">Tutor đang hoạt động</div>
+            </div>
+            <div class="card stat-card">
+                <i class="fas fa-book"></i>
+                <div class="stat-value">35</div>
+                <div class="stat-label">Lớp học đang mở</div>
+            </div>
+            <div class="card stat-card">
+                <i class="fas fa-exclamation-circle"></i>
+                <div class="stat-value">2</div>
+                <div class="stat-label">Khiếu nại chờ xử lý</div>
+            </div>
+        </div>
+
+        <!-- Academic Performance -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Hiệu quả học tập</h2>
+            </div>
+            <div class="chart-container">
+                <canvas id="performanceChart"></canvas>
+            </div>
+        </div>
+
+        <!-- Active Classes -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Lớp học đang diễn ra</h2>
+                <button class="btn btn-primary" onclick="refreshClasses()">
+                    <i class="fas fa-sync"></i>
+                    Làm mới
+                </button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Môn học</th>
+                            <th>Tutor</th>
+                            <th>Số học viên</th>
+                            <th>Thời gian</th>
+                            <th>Link Teams</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Lập trình Web</td>
+                            <td>Nguyễn Văn A</td>
+                            <td>15/20</td>
+                            <td>14:00 - 16:00</td>
+                            <td>
+                                <a href="#" class="btn btn-primary">
+                                    <i class="fas fa-video"></i>
+                                    Tham gia
+                                </a>
+                            </td>
+                            <td>
+                                <button class="btn btn-warning" onclick="monitorClass(1)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Cơ sở dữ liệu</td>
+                            <td>Trần Thị B</td>
+                            <td>12/15</td>
+                            <td>19:00 - 21:00</td>
+                            <td>
+                                <a href="#" class="btn btn-primary">
+                                    <i class="fas fa-video"></i>
+                                    Tham gia
+                                </a>
+                            </td>
+                            <td>
+                                <button class="btn btn-warning" onclick="monitorClass(2)">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Recent Complaints -->
+        <div class="card">
+            <div class="card-header">
+                <h2 class="card-title">Khiếu nại gần đây</h2>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Người khiếu nại</th>
+                            <th>Đối tượng</th>
+                            <th>Nội dung</th>
+                            <th>Ngày</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Nguyễn Văn X</td>
+                            <td>Tutor: Trần Thị B</td>
+                            <td>Tutor vắng mặt không báo trước</td>
+                            <td>15/03/2024</td>
+                            <td><span class="badge badge-warning">Đang xử lý</span></td>
+                            <td>
+                                <button class="btn btn-primary" onclick="handleComplaint(1)">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Trần Thị Y</td>
+                            <td>Hệ thống</td>
+                            <td>Không thể truy cập Teams</td>
+                            <td>14/03/2024</td>
+                            <td><span class="badge badge-warning">Đang xử lý</span></td>
+                            <td>
+                                <button class="btn btn-primary" onclick="handleComplaint(2)">
+                                    <i class="fas fa-check"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutor Approval Modal -->
+    <div class="modal" id="tutorApprovalModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Phê duyệt Tutor</h2>
+                <button class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Họ tên</th>
+                                <th>Email</th>
+                                <th>Môn học</th>
+                                <th>GPA</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Lê Văn C</td>
+                                <td>c.le@vlu.edu.vn</td>
+                                <td>Lập trình Java</td>
+                                <td>3.8</td>
+                                <td>
+                                    <button class="btn btn-success" onclick="approveTutor(1)">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button class="btn btn-danger" onclick="rejectTutor(1)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>Phạm Thị D</td>
+                                <td>d.pham@vlu.edu.vn</td>
+                                <td>Cơ sở dữ liệu</td>
+                                <td>3.6</td>
+                                <td>
+                                    <button class="btn btn-success" onclick="approveTutor(2)">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button class="btn btn-danger" onclick="rejectTutor(2)">
+                                        <i class="fas fa-times"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Student List Modal -->
+    <div class="modal center-modal" id="studentListModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Danh sách sinh viên</h2>
+                <button class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <!-- Search and Filter -->
+                <div class="center-filters">
+                    <div class="center-search-box">
+                        <input type="text" id="studentSearch" placeholder="Tìm kiếm sinh viên...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="center-filter-group">
+                        <label for="classFilter">Lớp học:</label>
+                        <select id="classFilter" class="form-control">
+                            <option value="">Tất cả lớp học</option>
+                            <option value="web">Lập trình Web</option>
+                            <option value="database">Cơ sở dữ liệu</option>
+                            <option value="java">Lập trình Java</option>
+                        </select>
+                    </div>
+                    <div class="center-filter-group">
+                        <label for="statusFilter">Trạng thái:</label>
+                        <select id="statusFilter" class="form-control">
+                            <option value="">Tất cả trạng thái</option>
+                            <option value="active">Đang học</option>
+                            <option value="inactive">Đã nghỉ</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Student List Table -->
+                <div class="table-container">
+                    <table class="center-data-table">
+                        <thead>
+                            <tr>
+                                <th>Mã sinh viên</th>
+                                <th>Họ và tên</th>
+                                <th>Email</th>
+                                <th>Lớp học</th>
+                                <th>Ngày đăng ký</th>
+                                <th>Trạng thái</th>
+                                <th>Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="studentTableBody">
+                            <tr>
+                                <td>SV001</td>
+                                <td>Nguyễn Văn A</td>
+                                <td>nguyenvana@vlu.edu.vn</td>
+                                <td>Lập trình Web</td>
+                                <td>01/03/2024</td>
+                                <td><span class="center-status-badge center-status-active">Đang học</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" onclick="viewStudentDetails('SV001')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-warning" onclick="editStudent('SV001')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>SV002</td>
+                                <td>Trần Thị B</td>
+                                <td>tranthib@vlu.edu.vn</td>
+                                <td>Cơ sở dữ liệu</td>
+                                <td>05/03/2024</td>
+                                <td><span class="center-status-badge center-status-active">Đang học</span></td>
+                                <td>
+                                    <button class="btn btn-sm btn-info" onclick="viewStudentDetails('SV002')">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-warning" onclick="editStudent('SV002')">
+                                        <i class="fas fa-edit"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="center-pagination">
+                    <button class="btn btn-outline-primary" id="prevPage">
+                        <i class="fas fa-chevron-left"></i> Trang trước
+                    </button>
+                    <span class="center-page-info">Trang 1 / 5</span>
+                    <button class="btn btn-outline-primary" id="nextPage">
+                        Trang sau <i class="fas fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tutor List Modal -->
+    <div class="modal center-modal" id="tutorListModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Danh sách Tutor</h2>
+                <button class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="center-filters">
+                    <div class="center-search-box">
+                        <input type="text" id="tutorSearch" placeholder="Tìm kiếm theo tên, email hoặc mã tutor...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="center-filter-group">
+                        <label for="subjectFilter">Môn dạy:</label>
+                        <select id="subjectFilter">
+                            <option value="">Tất cả</option>
+                            <option value="Lập trình Web">Lập trình Web</option>
+                            <option value="Cơ sở dữ liệu">Cơ sở dữ liệu</option>
+                        </select>
+                    </div>
+                    <div class="center-filter-group">
+                        <label for="tutorStatusFilter">Trạng thái:</label>
+                        <select id="tutorStatusFilter">
+                            <option value="">Tất cả</option>
+                            <option value="active">Đang dạy</option>
+                            <option value="inactive">Ngưng dạy</option>
+                        </select>
+                    </div>
+                </div>
+                <table class="center-data-table">
+                    <thead>
+                        <tr>
+                            <th>Mã</th>
+                            <th>Tên</th>
+                            <th>Email</th>
+                            <th>Môn dạy</th>
+                            <th>Kinh nghiệm</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tutorTableBody">
+                        <!-- Tutor rows will be rendered here -->
+                    </tbody>
+                </table>
+                <div class="center-pagination">
+                    <button id="tutorPrevPage" class="btn btn-sm">Trước</button>
+                    <span class="center-page-info">Trang 1 / 1</span>
+                    <button id="tutorNextPage" class="btn btn-sm">Sau</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Class List Modal -->
+    <div class="modal center-modal" id="classListModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Danh sách Lớp học</h2>
+                <button class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="center-filters">
+                    <div class="center-search-box">
+                        <input type="text" id="classSearch" placeholder="Tìm kiếm theo tên, mã lớp hoặc môn học...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="center-filter-group">
+                        <label for="classSubjectFilter">Môn học:</label>
+                        <select id="classSubjectFilter">
+                            <option value="">Tất cả</option>
+                            <option value="Lập trình Web">Lập trình Web</option>
+                            <option value="Cơ sở dữ liệu">Cơ sở dữ liệu</option>
+                        </select>
+                    </div>
+                    <div class="center-filter-group">
+                        <label for="classStatusFilter">Trạng thái:</label>
+                        <select id="classStatusFilter">
+                            <option value="">Tất cả</option>
+                            <option value="active">Đang mở</option>
+                            <option value="closed">Đã kết thúc</option>
+                        </select>
+                    </div>
+                </div>
+                <table class="center-data-table">
+                    <thead>
+                        <tr>
+                            <th>Mã lớp</th>
+                            <th>Tên lớp</th>
+                            <th>Môn học</th>
+                            <th>Số SV</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="classTableBody">
+                        <tr>
+                            <td>LH001</td>
+                            <td>
+                                <div>Lớp Web 1</div>
+                                <small>Lê Minh Tuấn</small>
+                                <small>Thứ 2, 4 (7:30 - 9:30)</small>
+                            </td>
+                            <td>Lập trình Web</td>
+                            <td>25</td>
+                            <td><span class="center-status-badge center-status-active">ĐANG MỞ</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>LH002</td>
+                            <td>
+                                <div>Lớp CSDL 2</div>
+                                <small>Phạm Thị Hoa</small>
+                                <small>Thứ 3, 5 (13:30 - 15:30)</small>
+                            </td>
+                            <td>Cơ sở dữ liệu</td>
+                            <td>30</td>
+                            <td><span class="center-status-badge center-status-active">ĐANG MỞ</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>LH003</td>
+                            <td>
+                                <div>Lớp Web 2</div>
+                                <small>Ngô Văn B</small>
+                                <small>Thứ 6, 7 (9:30 - 11:30)</small>
+                            </td>
+                            <td>Lập trình Web</td>
+                            <td>28</td>
+                            <td>ĐÃ KẾT THÚC</td>
+                            <td>
+                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>LH004</td>
+                            <td>
+                                <div>Lớp CSDL 1</div>
+                                <small>Phạm Thị Hoa</small>
+                                <small>Thứ 2, 4 (15:30 - 17:30)</small>
+                            </td>
+                            <td>Cơ sở dữ liệu</td>
+                            <td>22</td>
+                            <td><span class="center-status-badge center-status-active">ĐANG MỞ</span></td>
+                            <td>
+                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>LH005</td>
+                            <td>
+                                <div>Lớp Web 3</div>
+                                <small>Lê Minh Tuấn</small>
+                                <small>Thứ 3, 5 (7:30 - 9:30)</small>
+                            </td>
+                            <td>Lập trình Web</td>
+                            <td>20</td>
+                            <td>ĐÃ KẾT THÚC</td>
+                            <td>
+                                <button class="btn btn-sm btn-info"><i class="fas fa-eye"></i></button>
+                                <button class="btn btn-sm btn-warning"><i class="fas fa-edit"></i></button>
+                            </td>
+                        </tr>
+                        <!-- Class rows will be rendered here -->
+                    </tbody>
+                </table>
+                <div class="center-pagination">
+                    <button id="classPrevPage" class="btn btn-sm">Trước</button>
+                    <span class="center-page-info">Trang 1 / 1</span>
+                    <button id="classNextPage" class="btn btn-sm">Sau</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Complaint Modal -->
+    <div class="modal center-modal" id="complaintModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 class="modal-title">Xử lý Khiếu nại</h2>
+                <button class="modal-close" data-close-modal>&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="center-filters">
+                    <div class="center-search-box">
+                        <input type="text" id="complaintSearch" placeholder="Tìm kiếm theo mã, người gửi hoặc nội dung...">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="center-filter-group">
+                        <label for="complaintTypeFilter">Loại khiếu nại:</label>
+                        <select id="complaintTypeFilter">
+                            <option value="">Tất cả</option>
+                            <option value="tutor">Về giảng viên</option>
+                            <option value="class">Về lớp học</option>
+                            <option value="system">Về hệ thống</option>
+                        </select>
+                    </div>
+                    <div class="center-filter-group">
+                        <label for="complaintStatusFilter">Trạng thái:</label>
+                        <select id="complaintStatusFilter">
+                            <option value="">Tất cả</option>
+                            <option value="pending">Chờ xử lý</option>
+                            <option value="processing">Đang xử lý</option>
+                            <option value="resolved">Đã giải quyết</option>
+                        </select>
+                    </div>
+                </div>
+                <table class="center-data-table">
+                    <thead>
+                        <tr>
+                            <th>Mã KN</th>
+                            <th>Người gửi</th>
+                            <th>Loại</th>
+                            <th>Nội dung</th>
+                            <th>Ngày gửi</th>
+                            <th>Trạng thái</th>
+                            <th>Hành động</th>
+                        </tr>
+                    </thead>
+                    <tbody id="complaintTableBody">
+                        <!-- Complaint rows will be rendered here -->
+                    </tbody>
+                </table>
+                <div class="center-pagination">
+                    <button id="complaintPrevPage" class="btn btn-sm">Trước</button>
+                    <span class="center-page-info">Trang 1 / 1</span>
+                    <button id="complaintNextPage" class="btn btn-sm">Sau</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="../js/dashboard.js"></script>
+    <script>
+        // Initialize charts
+        function initCharts() {
+            const ctx = document.getElementById('performanceChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Lập trình Web', 'Cơ sở dữ liệu', 'Java', 'Python', 'AI'],
+                    datasets: [{
+                        label: 'Điểm trung bình',
+                        data: [8.5, 7.8, 8.2, 8.0, 7.5],
+                        backgroundColor: '#f4b400'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        title: {
+                            display: true,
+                            text: 'Điểm trung bình theo môn học'
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            max: 10,
+                            title: {
+                                display: true,
+                                text: 'Điểm'
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function refreshClasses() {
+            // TODO: Implement class refresh
+            alert('Đang làm mới danh sách lớp học...');
+        }
+
+        function monitorClass(id) {
+            // TODO: Implement class monitoring
+            alert('Đang mở công cụ giám sát lớp học #' + id);
+        }
+
+        function handleComplaint(id) {
+            // TODO: Implement complaint handling
+            alert('Đang xử lý khiếu nại #' + id);
+        }
+
+        function approveTutor(id) {
+            // TODO: Implement tutor approval
+            if (confirm('Bạn có chắc muốn phê duyệt Tutor này?')) {
+                alert('Đang phê duyệt Tutor #' + id);
+            }
+        }
+
+        function rejectTutor(id) {
+            // TODO: Implement tutor rejection
+            if (confirm('Bạn có chắc muốn từ chối Tutor này?')) {
+                alert('Đang từ chối Tutor #' + id);
+            }
+        }
+    </script>
+</body>
+</html> 

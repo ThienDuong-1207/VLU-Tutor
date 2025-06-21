@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Classroom Link</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #1a73e8;
+            color: white;
+            text-decoration: none;
+            border-radius: 5px;
+            margin: 10px;
+            cursor: pointer;
+        }
+        .btn:hover {
+            background-color: #1557b0;
+        }
+        .test-result {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 5px;
+            background-color: #e8f5e8;
+            border: 1px solid #4caf50;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>Test Classroom Link</h1>
+        <p>This page tests if the classroom.html link works properly.</p>
+        
+        <h2>Test Links:</h2>
+        <a href="dashboard/classroom.html" class="btn">Link to Classroom (Relative Path)</a>
+        <br>
+        <a href="./dashboard/classroom.html" class="btn">Link to Classroom (Explicit Relative)</a>
+        <br>
+        <button class="btn" onclick="testLink()">JavaScript Navigation</button>
+        
+        <div id="result" class="test-result" style="display: none;">
+            <strong>Test Result:</strong> <span id="resultText"></span>
+        </div>
+        
+        <h2>Debug Information:</h2>
+        <p><strong>Current URL:</strong> <span id="currentUrl"></span></p>
+        <p><strong>Target URL:</strong> <span id="targetUrl"></span></p>
+    </div>
+
+    <script>
+        // Display current URL
+        document.getElementById('currentUrl').textContent = window.location.href;
+        document.getElementById('targetUrl').textContent = new URL('dashboard/classroom.html', window.location.href).href;
+        
+        function testLink() {
+            const resultDiv = document.getElementById('result');
+            const resultText = document.getElementById('resultText');
+            
+            try {
+                // Test if the file exists by making a fetch request
+                fetch('dashboard/classroom.html')
+                    .then(response => {
+                        if (response.ok) {
+                            resultText.textContent = 'SUCCESS: File exists and is accessible!';
+                            resultDiv.style.backgroundColor = '#e8f5e8';
+                            resultDiv.style.borderColor = '#4caf50';
+                            
+                            // Navigate to the classroom
+                            setTimeout(() => {
+                                window.location.href = 'dashboard/classroom.html';
+                            }, 1000);
+                        } else {
+                            resultText.textContent = 'ERROR: File not found (HTTP ' + response.status + ')';
+                            resultDiv.style.backgroundColor = '#ffebee';
+                            resultDiv.style.borderColor = '#f44336';
+                        }
+                        resultDiv.style.display = 'block';
+                    })
+                    .catch(error => {
+                        resultText.textContent = 'ERROR: ' + error.message;
+                        resultDiv.style.backgroundColor = '#ffebee';
+                        resultDiv.style.borderColor = '#f44336';
+                        resultDiv.style.display = 'block';
+                    });
+            } catch (error) {
+                resultText.textContent = 'ERROR: ' + error.message;
+                resultDiv.style.backgroundColor = '#ffebee';
+                resultDiv.style.borderColor = '#f44336';
+                resultDiv.style.display = 'block';
+            }
+        }
+        
+        // Test on page load
+        window.addEventListener('load', testLink);
+    </script>
+</body>
+</html> 
